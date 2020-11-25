@@ -11,8 +11,8 @@ COPY vendor/ vendor/
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager github.com/ihoegen/iam-role-manager/cmd/manager
 
 # Copy the controller-manager into a thin image
-FROM ubuntu:latest
-RUN apt-get update && apt-get install -y ca-certificates awscli
+FROM alpine:3.12.1
+RUN apk add --no-cache ca-certificates
 
 WORKDIR /root/
 COPY --from=builder /go/src/github.com/ihoegen/iam-role-manager/manager .
