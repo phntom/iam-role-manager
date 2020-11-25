@@ -244,19 +244,38 @@ func isArn(policy string) bool {
 // Paginate over inline policies
 func (i *IAMClient) listInlinePolicies(roleName string) ([]string, error) {
 	var policyNamesPointers []*string
-	isTruncated := true
-	marker := "1"
-	for isTruncated {
+	currentPolicies, err := i.Client.ListRolePolicies(&iam.ListRolePoliciesInput{
+		RoleName: &roleName,
+	})
+	if err != nil {
+		return nil, err
+	}
+	isTruncated := *currentPolicies.IsTruncated
+	if isTruncated == true {
+		policyNamesPointers = append(policyNamesPointers, currentPolicies.PolicyNames...)
+		marker := *currentPolicies.Marker
+		for isTruncated {
+			currentPolicies, err := i.Client.ListRolePolicies(&iam.ListRolePoliciesInput{
+				RoleName: &roleName,
+				Marker:   &marker,
+			})
+			if err != nil {
+				return nil, err
+			}
+			policyNamesPointers = append(policyNamesPointers, currentPolicies.PolicyNames...)
+			isTruncated = *currentPolicies.IsTruncated
+			if isTruncated == true {
+				marker = *currentPolicies.Marker
+			}
+		}
+	} else {
 		currentPolicies, err := i.Client.ListRolePolicies(&iam.ListRolePoliciesInput{
 			RoleName: &roleName,
-			Marker:   &marker,
 		})
 		if err != nil {
 			return nil, err
 		}
 		policyNamesPointers = append(policyNamesPointers, currentPolicies.PolicyNames...)
-		marker = *currentPolicies.Marker
-		isTruncated = *currentPolicies.IsTruncated
 	}
 	var policyNameValues []string
 	for _, val := range policyNamesPointers {
@@ -268,19 +287,38 @@ func (i *IAMClient) listInlinePolicies(roleName string) ([]string, error) {
 // Paginate over attached policies
 func (i *IAMClient) listAttachedPolicies(roleName string) ([]iam.AttachedPolicy, error) {
 	var policyPointers []*iam.AttachedPolicy
-	isTruncated := true
-	marker := "1"
-	for isTruncated {
+	currentPolicies, err := i.Client.ListAttachedRolePolicies(&iam.ListAttachedRolePoliciesInput{
+		RoleName: &roleName,
+	})
+	if err != nil {
+		return nil, err
+	}
+	isTruncated := *currentPolicies.IsTruncated
+	if isTruncated == true {
+		policyPointers = append(policyPointers, currentPolicies.AttachedPolicies...)
+		marker := *currentPolicies.Marker
+		for isTruncated {
+			currentPolicies, err := i.Client.ListAttachedRolePolicies(&iam.ListAttachedRolePoliciesInput{
+				RoleName: &roleName,
+				Marker:   &marker,
+			})
+			if err != nil {
+				return nil, err
+			}
+			policyPointers = append(policyPointers, currentPolicies.AttachedPolicies...)
+			isTruncated = *currentPolicies.IsTruncated
+			if isTruncated == true {
+				marker = *currentPolicies.Marker
+			}
+		}
+	} else {
 		currentPolicies, err := i.Client.ListAttachedRolePolicies(&iam.ListAttachedRolePoliciesInput{
 			RoleName: &roleName,
-			Marker:   &marker,
 		})
 		if err != nil {
 			return nil, err
 		}
 		policyPointers = append(policyPointers, currentPolicies.AttachedPolicies...)
-		marker = *currentPolicies.Marker
-		isTruncated = *currentPolicies.IsTruncated
 	}
 	var policyNameValues []iam.AttachedPolicy
 	for _, val := range policyPointers {
