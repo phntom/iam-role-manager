@@ -1,9 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: ihoegen/iam-role-manager
-  tag: latest
-  pullPolicy: Always
+  repository: phntom/kochi
+  tag: 1.1.0
+  pullPolicy: IfNotPresent
 
 rbac:
   create: true
@@ -11,5 +11,8 @@ rbac:
 service:
   port: 443
 
-# If using kube2iam or kiam
-#iamRole: 
+#iamRole: arn:aws:iam::123456789000:role/some-role
+
+#aws:
+#  eks:
+#    role: arn:aws:iam::123456789000:role/some-role

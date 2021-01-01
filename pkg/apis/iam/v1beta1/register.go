@@ -19,7 +19,7 @@ limitations under the License.
 // Package v1beta1 contains API Schema definitions for the iam v1beta1 API group
 // +k8s:openapi-gen=true
 // +k8s:deepcopy-gen=package,register
-// +k8s:conversion-gen=github.com/ihoegen/iam-role-manager/pkg/apis/iam
+// +k8s:conversion-gen=github.com/phntom/kochi/pkg/apis/iam
 // +k8s:defaulter-gen=TypeMeta
 // +groupName=iam.amazonaws.com
 package v1beta1

@@ -1,6 +1,4 @@
 /*
-Copyright 2018 Ian Hoegen.
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -19,8 +17,8 @@ package main
 import (
 	"log"
 
-	"github.com/ihoegen/iam-role-manager/pkg/apis"
-	"github.com/ihoegen/iam-role-manager/pkg/controller"
+	"github.com/phntom/kochi/pkg/apis"
+	"github.com/phntom/kochi/pkg/controller"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/manager"

@@ -17,7 +17,7 @@ limitations under the License.
 package apis
 
 import (
-	"github.com/ihoegen/iam-role-manager/pkg/apis/iam/v1beta1"
+	"github.com/phntom/kochi/pkg/apis/iam/v1beta1"
 )
 
 func init() {

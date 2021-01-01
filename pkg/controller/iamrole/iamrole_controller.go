@@ -22,7 +22,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/iam"
-	iamv1beta1 "github.com/ihoegen/iam-role-manager/pkg/apis/iam/v1beta1"
+	iamv1beta1 "github.com/phntom/kochi/pkg/apis/iam/v1beta1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/tools/record"
@@ -81,9 +81,16 @@ type ReconcileIAMRole struct {
 func (r *ReconcileIAMRole) Reconcile(request reconcile.Request) (reconcile.Result, error) {
 	// Fetch the IAMRole instance
 	iamRole := &iamv1beta1.IAMRole{}
-	client := iam.New(session.New())
-	iamClient := NewIAMClient(client, iamRole)
-	err := r.Get(context.TODO(), request.NamespacedName, iamRole)
+	awsSessionOptions := session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}
+	awsSession, err := session.NewSessionWithOptions(awsSessionOptions)
+	if err != nil {
+		return reconcile.Result{}, err
+	}
+	awsClient := iam.New(awsSession)
+	iamClient := NewIAMClient(awsClient, iamRole)
+	err = r.Get(context.TODO(), request.NamespacedName, iamRole)
 	if err != nil {
 		// IAM role deleted
 		if errors.IsNotFound(err) {

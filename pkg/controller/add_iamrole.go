@@ -17,7 +17,7 @@ limitations under the License.
 package controller
 
 import (
-	"github.com/ihoegen/iam-role-manager/pkg/controller/iamrole"
+	"github.com/phntom/kochi/pkg/controller/iamrole"
 )
 
 func init() {

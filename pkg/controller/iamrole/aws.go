@@ -8,7 +8,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/sts"
-	iamv1beta1 "github.com/ihoegen/iam-role-manager/pkg/apis/iam/v1beta1"
+	iamv1beta1 "github.com/phntom/kochi/pkg/apis/iam/v1beta1"
 )
 
 // IAMClient provides an interface with interacting with AWS
@@ -228,7 +228,14 @@ func getArn(policyName string) (string, error) {
 	if isArn(policyName) {
 		return policyName, nil
 	}
-	stsClient := sts.New(session.New())
+	awsSessionOptions := session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}
+	awsSession, err := session.NewSessionWithOptions(awsSessionOptions)
+	if err != nil {
+		return "", err
+	}
+	stsClient := sts.New(awsSession)
 	callerIdentity, err := stsClient.GetCallerIdentity(&sts.GetCallerIdentityInput{})
 	if err != nil {
 		return "", err
