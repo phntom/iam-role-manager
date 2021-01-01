@@ -2,7 +2,6 @@ replicaCount: 1
 
 image:
   repository: phntom/kochi
-  tag: 1.1.0
   pullPolicy: IfNotPresent
 
 rbac:
@@ -11,8 +10,6 @@ rbac:
 service:
   port: 443
 
-#iamRole: arn:aws:iam::123456789000:role/some-role
-
-#aws:
-#  eks:
-#    role: arn:aws:iam::123456789000:role/some-role
+aws:
+  eks:
+    role: arn:aws:iam::123456789000:role/some-role

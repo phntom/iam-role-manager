@@ -26,15 +26,35 @@ spec:
     {{- end }}
       containers:
       - command:
-        - /root/manager
-        image: '{{ .Values.image.repository }}:{{ .Values.image.tag }}'
-        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+          - /root/manager
+        volumeMounts:
+        - mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+          name: aws-iam-token
+          readOnly: true
+        image: '{{ .Values.image.repository }}:{{ .Chart.AppVersion }}'
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ template "iam-role-manager.fullname" . }}
+        env:
+          - name: AWS_ROLE_ARN
+            value: {{ .Values.aws.eks.role }}
+          - name: AWS_WEB_IDENTITY_TOKEN_FILE
+            value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+          - name: AWS_ROLE_SESSION_NAME
+            value: kochi
         resources:
           limits:
             cpu: 100m
-            memory: 30Mi
+            memory: 100Mi
           requests:
             cpu: 100m
             memory: 20Mi
+      volumes:
+        - name: aws-iam-token
+          projected:
+            defaultMode: 420
+            sources:
+              - serviceAccountToken:
+                  audience: sts.amazonaws.com
+                  expirationSeconds: 86400
+                  path: token
       terminationGracePeriodSeconds: 10
